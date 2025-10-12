@@ -1,0 +1,66 @@
+[
+    {
+        "id": "begrussung-1",
+        "german": "Guten Morgen!",
+        "turkish": "Günaydın!",
+        "category": "Selamlaşma",
+        "difficulty": "Kolay",
+        "usage": "Güne başlarken selamlaşmak için kullanılır."
+    },
+    {
+        "id": "danke-1",
+        "german": "Vielen Dank für Ihre Hilfe.",
+        "turkish": "Yardımınız için çok teşekkür ederim.",
+        "category": "Teşekkür",
+        "difficulty": "Kolay",
+        "usage": "Yardım için kibar bir teşekkür ifadesi."
+    },
+    {
+        "id": "meeting-1",
+        "german": "Könnten wir den Termin verschieben?",
+        "turkish": "Randevuyu erteleyebilir miyiz?",
+        "category": "İş Görüşmesi",
+        "difficulty": "Orta",
+        "usage": "Resmi bir toplantı değişikliği talebi."
+    },
+    {
+        "id": "problem-1",
+        "german": "Ich habe ein Problem mit der Bestellung.",
+        "turkish": "Siparişle ilgili bir sorunum var.",
+        "category": "Müşteri Hizmetleri",
+        "difficulty": "Orta",
+        "usage": "Bir müşteri hizmetleri temsilcisine sorunu bildirmek için."
+    },
+    {
+        "id": "presentation-1",
+        "german": "Lassen Sie mich das genauer erklären.",
+        "turkish": "Bunu daha ayrıntılı açıklamama izin verin.",
+        "category": "Sunum",
+        "difficulty": "Zor",
+        "usage": "Sunum sırasında bir konuyu derinlemesine anlatmak için."
+    },
+    {
+        "id": "everyday-1",
+        "german": "Können Sie das bitte wiederholen?",
+        "turkish": "Lütfen bunu tekrar edebilir misiniz?",
+        "category": "Günlük Konuşma",
+        "difficulty": "Kolay",
+        "usage": "Anlaşılamayan bir ifadeyi tekrar istemek için."
+    },
+    {
+        "id": "travel-1",
+        "german": "Wo befindet sich die nächste U-Bahn-Station?",
+        "turkish": "En yakın metro istasyonu nerede?",
+        "category": "Seyahat",
+        "difficulty": "Orta",
+        "usage": "Yol tarifi istemek için."
+    },
+    {
+        "id": "emergency-1",
+        "german": "Rufen Sie bitte einen Arzt!",
+        "turkish": "Lütfen bir doktor çağırın!",
+        "category": "Acil Durum",
+        "difficulty": "Zor",
+        "usage": "Acil yardım gereken durumlarda."
+    }
+]
