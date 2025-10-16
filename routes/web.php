@@ -7,3 +7,5 @@ Route::middleware(['auth'])->group(function () {
     Route::view('/', 'dashboard.index')->name('dashboard');
     Route::get('/learn', [LearnController::class, 'index'])->name('learn');
 });
+
+require __DIR__.'/auth.php';

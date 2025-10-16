@@ -7,7 +7,6 @@ use App\Models\UserWord;
 use App\Models\Word;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class GameController extends Controller
 {
@@ -24,7 +23,10 @@ class GameController extends Controller
             ->pluck('word_id')
             ->toArray();
 
-        $query = Word::query()->forGamePool($request->string('type'));
+        $type = $request->string('type');
+        $poolType = $type === 'dragdrop' ? 'artikel' : $type;
+
+        $query = Word::query()->forGamePool($poolType);
 
         if (! empty($leechIds)) {
             $words = Word::whereIn('id', $leechIds)->inRandomOrder()->limit(10)->get();
