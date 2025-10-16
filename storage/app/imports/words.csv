@@ -1,0 +1,4 @@
+lemma,gender,plural,example_sentence,example_translation,level,tags
+Haus,n,Häuser,Das Haus ist groß.,Ev büyük.,A1,"[""ev"",""yer""]"
+Hund,m,Hunde,Der Hund bellt.,Köpek havlıyor.,A1,"[""hayvan""]"
+Zeit,f,Zeiten,Die Zeit vergeht.,Zaman geçiyor.,A2,"[""soyut""]"
