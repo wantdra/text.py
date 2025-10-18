@@ -4,10 +4,10 @@ require_once __DIR__ . '/yardimci.php';
 $dersler = json_oku('dersler.json');
 include __DIR__ . '/ust.php';
 ?>
-<section class="kart">
+<section class="kart" data-scroll>
     <h1>Ders Listesi</h1>
     <p>Pflegefachmann/frau eğitimine dair temel dersleri keşfedin. Her ders için özel quiz ve flashkart içerikleri mevcut.</p>
-    <div class="tablo-kapsayici">
+    <div class="tablo-wrapper">
         <table class="tablo">
             <thead>
                 <tr>

@@ -19,4 +19,4 @@ Tüm içerikler `veriler/` klasöründe JSON formatında tutulur:
 - `kartlar.json`
 - `oturumlar.json`
 
-Değişiklik yapmadan önce dosyaların bir yedeğini alman önerilir. Yönetim paneli üzerinden yeni ders, soru ve kart ekleyebilirsin.
+Her değişiklik öncesi sistem otomatik olarak `yedekler/` klasörüne zaman damgalı yedek bırakır; yine de düzenleme yapmadan önce dosyaların bir kopyasını almak önerilir. Yönetim paneli üzerinden yeni ders, soru, kart ve kullanıcı ekleyebilirsin.

@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 include __DIR__ . '/ust.php';
 ?>
-<section class="kart">
+<section class="kart" data-scroll>
     <h1>Giriş Yap</h1>
     <?php if ($hata): ?>
         <div class="hata"><?= $hata ?></div>

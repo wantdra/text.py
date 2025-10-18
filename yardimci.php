@@ -4,6 +4,13 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 const VERI_KLASORU = __DIR__ . '/veriler';
+const YEDEK_KLASORU = __DIR__ . '/yedekler';
+
+function klasor_olustur(string $yol): void {
+    if (!is_dir($yol)) {
+        mkdir($yol, 0775, true);
+    }
+}
 
 function json_yolu(string $dosya): string {
     return VERI_KLASORU . '/' . $dosya;
@@ -31,25 +38,30 @@ function json_yaz(string $dosya, array $veri): bool {
     if ($json === false) {
         return false;
     }
-    $fp = fopen($yol, 'c+');
-    if (!$fp) {
+
+    klasor_olustur(dirname($yol));
+    klasor_olustur(YEDEK_KLASORU);
+
+    if (file_exists($yol)) {
+        $zaman = date('Ymd-His');
+        $yedek = YEDEK_KLASORU . '/' . pathinfo($dosya, PATHINFO_FILENAME) . "-{$zaman}-" . substr(uuid(), 0, 8) . '.json';
+        @copy($yol, $yedek);
+    }
+
+    $gecici = $yol . '.' . uniqid('tmp', true);
+    $yazildi = file_put_contents($gecici, $json, LOCK_EX);
+    if ($yazildi === false) {
+        @unlink($gecici);
         return false;
     }
-    try {
-        if (!flock($fp, LOCK_EX)) {
-            fclose($fp);
-            return false;
-        }
-        ftruncate($fp, 0);
-        $sonuc = fwrite($fp, $json);
-        fflush($fp);
-        flock($fp, LOCK_UN);
-        fclose($fp);
-        return $sonuc !== false;
-    } catch (Throwable $e) {
-        fclose($fp);
+
+    if (!@rename($gecici, $yol)) {
+        @unlink($gecici);
         return false;
     }
+
+    @chmod($yol, 0664);
+    return true;
 }
 
 function temiz(?string $deger): string {

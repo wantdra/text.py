@@ -11,7 +11,7 @@ $baslik = $sayfa_baslik ?? 'Pflegefachmann/frau Quiz';
     <title><?= htmlspecialchars($baslik) ?></title>
     <link rel="stylesheet" href="stil.css">
 </head>
-<body class="tema-acik">
+<body class="tema-koyu">
 <header class="ust">
     <div class="ust-ic">
         <a href="anasayfa.php" class="logo">Pflege Quiz</a>

@@ -24,7 +24,7 @@ if ($sorgu !== '') {
 
 include __DIR__ . '/ust.php';
 ?>
-<section class="kart">
+<section class="kart" data-scroll>
     <h1>Arama</h1>
     <form method="get">
         <div class="form-grup">
@@ -35,7 +35,7 @@ include __DIR__ . '/ust.php';
     </form>
 </section>
 <?php if ($sorgu !== ''): ?>
-    <section class="kart">
+    <section class="kart" data-scroll>
         <h2>Soru Sonuçları (<?= count($soru_sonuclari) ?>)</h2>
         <?php if ($soru_sonuclari): ?>
             <ul>
@@ -47,7 +47,7 @@ include __DIR__ . '/ust.php';
             <p>Uygun soru bulunamadı.</p>
         <?php endif; ?>
     </section>
-    <section class="kart">
+    <section class="kart" data-scroll>
         <h2>Flashkart Sonuçları (<?= count($kart_sonuclari) ?>)</h2>
         <?php if ($kart_sonuclari): ?>
             <ul>

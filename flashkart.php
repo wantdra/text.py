@@ -54,7 +54,7 @@ $due = array_filter($kartlar, function ($kart) {
 $gosterilecek = reset($due);
 include __DIR__ . '/ust.php';
 ?>
-<section class="kart">
+<section class="kart" data-scroll>
     <h1>Flashkart Tekrarı</h1>
     <p>Aralıklı tekrar algoritması ile kartlarını zamanında gözden geçir.</p>
     <?php if ($hata): ?>
@@ -64,7 +64,7 @@ include __DIR__ . '/ust.php';
     <?php endif; ?>
 </section>
 <?php if ($gosterilecek): ?>
-    <section class="kart flas-kart">
+    <section class="kart flas-kart" data-scroll>
         <h2>Sıradaki Kart</h2>
         <p><?= htmlspecialchars($gosterilecek['soru'] ?? '') ?></p>
         <button class="buton" type="button" data-aksiyon="cevabi-goster" data-hedef="kart-cevap">Cevabı Gör</button>
@@ -79,7 +79,7 @@ include __DIR__ . '/ust.php';
         <small>Sonraki tekrar: <?= htmlspecialchars(date('d.m.Y H:i', strtotime($gosterilecek['sonraki_tekrar'] ?? 'now'))) ?></small>
     </section>
 <?php else: ?>
-    <section class="kart">
+    <section class="kart" data-scroll>
         <h2>Tebrikler!</h2>
         <p>Şu anda tekrar edilmesi gereken kart bulunmuyor. Yeni kartlar ekleyerek veya belirli bir süre sonra tekrar gelerek bilgini tazele.</p>
     </section>

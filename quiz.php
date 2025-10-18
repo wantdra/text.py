@@ -74,18 +74,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 include __DIR__ . '/ust.php';
 ?>
 <?php if ($durum === 'hata'): ?>
-    <section class="kart">
+    <section class="kart" data-scroll>
         <h1>Quiz</h1>
         <div class="hata"><?= $hata_mesaji ?? 'Bir sorun oluştu.' ?></div>
         <p><a class="buton" href="quiz.php<?= $secili_ders ? '?ders=' . urlencode($secili_ders) : '' ?>">Yeniden Dene</a></p>
     </section>
 <?php elseif ($durum === 'sonuc'): ?>
-    <section class="kart">
+    <section class="kart" data-scroll>
         <h1>Sonuçlar</h1>
         <p><strong>Puanınız:</strong> <?= $puan ?> / 100</p>
     </section>
     <?php foreach ($sonuclar as $indeks => $sonuc): ?>
-        <section class="kart">
+        <section class="kart" data-scroll>
             <h2><?= ($indeks + 1) ?>. Soru</h2>
             <p><?= htmlspecialchars($sonuc['soru'] ?? '') ?></p>
             <p><strong>Doğru Cevap:</strong> <?= htmlspecialchars($sonuc['dogru'] ?? '') ?></p>
@@ -96,12 +96,12 @@ include __DIR__ . '/ust.php';
             <?php endif; ?>
         </section>
     <?php endforeach; ?>
-    <section class="kart">
+    <section class="kart" data-scroll>
         <a class="buton" href="quiz.php<?= $secili_ders ? '?ders=' . urlencode($secili_ders) : '' ?>">Yeni Quiz Başlat</a>
     </section>
 <?php else: ?>
     <?php $quiz_sorular = $_SESSION['quiz_sorular'] ?? []; ?>
-    <section class="kart">
+    <section class="kart" data-scroll>
         <h1>Quiz</h1>
         <?php if ($secili_ders): ?>
             <p><strong>Ders:</strong> <?= htmlspecialchars($secili_ders) ?></p>
@@ -119,7 +119,7 @@ include __DIR__ . '/ust.php';
                         $secenekler = ['Doğru', 'Yanlış'];
                     }
                 ?>
-                <div class="quiz-soru kart">
+                <div class="quiz-soru kart" data-scroll>
                     <h2><?= ($indeks + 1) ?>. Soru</h2>
                     <p><?= htmlspecialchars($soru['soru'] ?? '') ?></p>
                     <?php if ($tip === 'kisa'): ?>

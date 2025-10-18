@@ -5,7 +5,7 @@ oturum_zorunlu();
 $kullanici = kullanici();
 include __DIR__ . '/ust.php';
 ?>
-<section class="kart">
+<section class="kart" data-scroll>
     <h1>Merhaba, <?= htmlspecialchars($kullanici['ad'] ?? '') ?></h1>
     <div class="profil-bilgi">
         <p><strong>Ad:</strong> <?= htmlspecialchars($kullanici['ad'] ?? '') ?></p>
@@ -13,9 +13,9 @@ include __DIR__ . '/ust.php';
         <p><strong>E-posta:</strong> <?= htmlspecialchars($kullanici['eposta'] ?? '') ?></p>
         <p><strong>Rol:</strong> <?= htmlspecialchars($kullanici['rol'] ?? 'ogrenci') ?></p>
     </div>
-    <div class="kart">
-        <h2>Öğrenme Özeti</h2>
-        <p>İstatistik alanı yakında burada olacak. Quiz sonuçlarını ve flashkart tekrarlarını burada takip edeceksin.</p>
-    </div>
+</section>
+<section class="kart" data-scroll>
+    <h2>Öğrenme Özeti</h2>
+    <p>İstatistik alanı yakında burada olacak. Quiz sonuçlarını ve flashkart tekrarlarını burada takip edeceksin.</p>
 </section>
 <?php include __DIR__ . '/alt.php'; ?>
