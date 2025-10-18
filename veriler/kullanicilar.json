@@ -1,0 +1,20 @@
+[
+  {
+    "id": "u1",
+    "ad": "Admin",
+    "soyad": "Kullanıcı",
+    "eposta": "admin@site.local",
+    "rol": "admin",
+    "sifre_duz": "admin123",
+    "sifre_hash": "$2y$12$JPH3sj0oHlSevaALUZIR9ezlsRCEDJ2g2k..77ajVltMoEoa7TJfS"
+  },
+  {
+    "id": "u2",
+    "ad": "Öğrenci",
+    "soyad": "Demo",
+    "eposta": "ogrenci@site.local",
+    "rol": "ogrenci",
+    "sifre_duz": "ogrenci123",
+    "sifre_hash": "$2y$12$tsKT5/aL3iPgRWHiZ2XCk.WcfjjAjpjZYeeowIvCP3G2RpOLv7uJm"
+  }
+]

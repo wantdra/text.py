@@ -1,0 +1,10 @@
+[
+  {"id":"d1","ad":"Temel Anatomi","aciklama":"İnsan vücudunun temel yapı ve sistemleri"},
+  {"id":"d2","ad":"Fizyoloji","aciklama":"Organ sistemlerinin işleyişi ve homeostaz"},
+  {"id":"d3","ad":"Hastane Hijyeni","aciklama":"Enfeksiyon kontrolü ve asepsi uygulamaları"},
+  {"id":"d4","ad":"İlaç Yönetimi","aciklama":"Farmakoloji temelleri ve ilaç uygulama güvenliği"},
+  {"id":"d5","ad":"Beslenme ve Diyet","aciklama":"Hastalar için dengeli beslenme planlaması"},
+  {"id":"d6","ad":"Klinik Beceriler","aciklama":"Günlük bakım ve vital bulgu takibi"},
+  {"id":"d7","ad":"Mental Sağlık","aciklama":"Psikiyatri hemşireliği ve iletişim"},
+  {"id":"d8","ad":"Palyatif Bakım","aciklama":"Yaşam sonu bakım ve aile desteği"}
+]

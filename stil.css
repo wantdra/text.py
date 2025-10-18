@@ -1,0 +1,318 @@
+:root {
+    --renk-arka: #f5f7fb;
+    --renk-yazi: #1f2933;
+    --renk-vurgu: #2563eb;
+    --renk-kart: #ffffff;
+    --renk-kart-golge: rgba(15, 23, 42, 0.1);
+}
+
+body.tema-koyu {
+    --renk-arka: #0f172a;
+    --renk-yazi: #e2e8f0;
+    --renk-vurgu: #60a5fa;
+    --renk-kart: #1e293b;
+    --renk-kart-golge: rgba(15, 23, 42, 0.6);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--renk-arka);
+    color: var(--renk-yazi);
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.ust {
+    background: rgba(255,255,255,0.8);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+body.tema-koyu .ust {
+    background: rgba(15,23,42,0.8);
+    border-bottom-color: rgba(148, 163, 184, 0.15);
+}
+
+.ust-ic {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.logo {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--renk-vurgu);
+    text-decoration: none;
+}
+
+.menu {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.menu a {
+    text-decoration: none;
+    color: var(--renk-yazi);
+    padding: 0.5rem 0.75rem;
+    border-radius: 999px;
+    transition: background 0.2s ease, color 0.2s ease;
+    font-size: 0.95rem;
+}
+
+.menu a:hover,
+.menu a:focus {
+    background: rgba(37, 99, 235, 0.12);
+    color: var(--renk-vurgu);
+}
+
+.menu a.vurgulu {
+    background: var(--renk-vurgu);
+    color: #fff;
+}
+
+.menu a.cikis {
+    color: #ef4444;
+}
+
+.tema-dugme {
+    background: var(--renk-kart);
+    border: none;
+    border-radius: 999px;
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    box-shadow: 0 4px 14px var(--renk-kart-golge);
+    font-size: 1rem;
+}
+
+.icerik {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+    display: grid;
+    gap: 1.5rem;
+}
+
+.kart {
+    background: var(--renk-kart);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 20px 45px var(--renk-kart-golge);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.kart:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 25px 55px var(--renk-kart-golge);
+}
+
+.kart h2, .kart h3 {
+    margin-top: 0;
+}
+
+.buton {
+    background: var(--renk-vurgu);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 0.75rem 1.2rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.buton:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.25);
+}
+
+.tablo {
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+    border-radius: 16px;
+}
+
+.tablo th, .tablo td {
+    padding: 0.9rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.tablo tbody tr:hover {
+    background: rgba(37, 99, 235, 0.08);
+}
+
+.form-grup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-bottom: 1rem;
+}
+
+.form-grup label {
+    font-weight: 600;
+}
+
+.form-grup input,
+.form-grup textarea,
+.form-grup select {
+    border-radius: 12px;
+    border: 1px solid rgba(148, 163, 184, 0.4);
+    padding: 0.7rem 0.9rem;
+    font-size: 1rem;
+    background: rgba(255,255,255,0.85);
+    color: inherit;
+}
+
+.form-grup textarea {
+    min-height: 120px;
+}
+
+.hata {
+    padding: 1rem;
+    border-radius: 14px;
+    background: rgba(239, 68, 68, 0.12);
+    color: #b91c1c;
+}
+
+.basarili {
+    padding: 1rem;
+    border-radius: 14px;
+    background: rgba(34, 197, 94, 0.15);
+    color: #047857;
+}
+
+.progres {
+    height: 14px;
+    background: rgba(148, 163, 184, 0.3);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.progres-ic {
+    height: 100%;
+    background: linear-gradient(90deg, #38bdf8, #6366f1);
+    border-radius: inherit;
+}
+
+.alt {
+    padding: 2rem 1.5rem;
+    border-top: 1px solid rgba(148, 163, 184, 0.2);
+    background: rgba(255,255,255,0.6);
+}
+
+body.tema-koyu .alt {
+    background: rgba(15,23,42,0.7);
+    border-top-color: rgba(148, 163, 184, 0.1);
+}
+
+.alt-ic {
+    max-width: 1100px;
+    margin: 0 auto;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.alt-ic a {
+    color: var(--renk-vurgu);
+    text-decoration: none;
+}
+
+.quiz-soru {
+    display: grid;
+    gap: 1rem;
+}
+
+.quiz-secim {
+    display: grid;
+    gap: 0.6rem;
+}
+
+.quiz-secim label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.flas-kart {
+    display: grid;
+    gap: 1rem;
+    text-align: center;
+}
+
+.flas-cevap {
+    padding: 1.2rem;
+    border-radius: 16px;
+    background: rgba(37, 99, 235, 0.08);
+    font-size: 1.1rem;
+}
+
+.srs-butons {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.srs-butons button {
+    min-width: 90px;
+}
+
+@media (max-width: 768px) {
+    .ust-ic {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .menu {
+        width: 100%;
+        justify-content: space-between;
+    }
+    .menu a {
+        flex: 1 1 auto;
+        text-align: center;
+    }
+    .icerik {
+        padding: 1.5rem 1rem 3rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+.flas-cevap {
+    display: none;
+}
+
+.flas-cevap[data-gorunur] {
+    display: block;
+}
+.buton-grup {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+.sekme-menu {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}

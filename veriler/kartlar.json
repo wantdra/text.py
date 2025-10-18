@@ -1,0 +1,23 @@
+[
+  {"id":"k1","soru":"Vital bulgular nelerdir?","cevap":"Vücut ısısı, nabız, solunum, kan basıncı, oksijen satürasyonu","sonraki_tekrar":"2024-01-01T08:00:00+00:00"},
+  {"id":"k2","soru":"Asepsinin amacı nedir?","cevap":"Mikroorganizmaların bulaşmasını ve enfeksiyon gelişimini engellemek","sonraki_tekrar":"2024-01-02T09:00:00+00:00"},
+  {"id":"k3","soru":"IM enjeksiyon açısı kaç derecedir?","cevap":"90 derece","sonraki_tekrar":"2024-01-03T10:00:00+00:00"},
+  {"id":"k4","soru":"Kalp yetmezliğinde önerilen pozisyon?","cevap":"Semi-Fowler veya yüksek Fowler pozisyonu","sonraki_tekrar":"2024-01-04T07:30:00+00:00"},
+  {"id":"k5","soru":"Hipoglisemi belirtileri?","cevap":"Terleme, titreme, baş dönmesi, bilinç değişikliği","sonraki_tekrar":"2024-01-05T06:45:00+00:00"},
+  {"id":"k6","soru":"Florürün diş sağlığındaki rolü?","cevap":"Mineyi güçlendirir, çürük oluşumunu azaltır","sonraki_tekrar":"2024-01-06T11:15:00+00:00"},
+  {"id":"k7","soru":"Basınç ülseri evre 1 bulgusu?","cevap":"Deride kızarıklık, solmayan eritem","sonraki_tekrar":"2024-01-01T05:00:00+00:00"},
+  {"id":"k8","soru":"SBAR açılımı nedir?","cevap":"Situation, Background, Assessment, Recommendation","sonraki_tekrar":"2024-01-02T05:30:00+00:00"},
+  {"id":"k9","soru":"Normal erişkin solunum sayısı?","cevap":"Dakikada 12-20 solunum","sonraki_tekrar":"2024-01-03T12:00:00+00:00"},
+  {"id":"k10","soru":"Palyatif bakımın odak noktası?","cevap":"Yaşam kalitesini artırmak ve semptomları hafifletmek","sonraki_tekrar":"2024-01-04T08:45:00+00:00"},
+  {"id":"k11","soru":"İntravenöz sıvıların amacı?","cevap":"Hidrasyon sağlamak, elektrolit ve ilaç tedavisi uygulamak","sonraki_tekrar":"2024-01-05T09:20:00+00:00"},
+  {"id":"k12","soru":"Temel yaşam desteği sıralaması?","cevap":"Güvenliği sağla, bilinç kontrolü, yardım çağır, solunum ve dolaşım kontrolü, göğüs kompresyonu","sonraki_tekrar":"2024-01-06T07:10:00+00:00"},
+  {"id":"k13","soru":"Kateter bakımında günlük gözlem?","cevap":"Giriş yerinde kızarıklık, akıntı, ağrı var mı","sonraki_tekrar":"2024-01-07T06:00:00+00:00"},
+  {"id":"k14","soru":"Deliryum tanımı?","cevap":"Akut başlangıçlı bilinç ve dikkat bozukluğu","sonraki_tekrar":"2024-01-08T08:10:00+00:00"},
+  {"id":"k15","soru":"Hastane hijyeninde el antiseptiği ne zaman?","cevap":"Hasta temasından önce ve sonra, aseptik işlemlerden önce, sıvı teması riski sonrası","sonraki_tekrar":"2024-01-09T09:50:00+00:00"},
+  {"id":"k16","soru":"Malnütrisyon risk faktörleri?","cevap":"İştah kaybı, kilo kaybı, kronik hastalık, yaşlılık","sonraki_tekrar":"2024-01-10T07:25:00+00:00"},
+  {"id":"k17","soru":"İlaç beş doğru ilkesi?","cevap":"Doğru hasta, doğru ilaç, doğru doz, doğru yol, doğru zaman","sonraki_tekrar":"2024-01-02T04:15:00+00:00"},
+  {"id":"k18","soru":"Glasgow Koma Skalası kaç bileşenlidir?","cevap":"Üç bileşen: göz, sözel, motor yanıt","sonraki_tekrar":"2024-01-03T03:30:00+00:00"},
+  {"id":"k19","soru":"Fall risk değerlendirmesi neyi amaçlar?","cevap":"Düşme riskini belirleyip önleyici önlemler almak","sonraki_tekrar":"2024-01-01T03:40:00+00:00"},
+  {"id":"k20","soru":"Basal metabolizma nedir?","cevap":"Dinlenme halinde yaşam için gerekli enerji miktarı","sonraki_tekrar":"2024-01-02T06:20:00+00:00"},
+  {"id":"k21","soru":"Dekübit ülseri evre 2 özelliği?","cevap":"Dermis kaybı ile yüzeysel açık yara veya kabarcık","sonraki_tekrar":"2024-01-02T07:20:00+00:00"}
+]
