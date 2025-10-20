@@ -1,0 +1,5 @@
+Options +FollowSymLinks
+RewriteEngine On
+# Örnek: /yazi/slug -> /icerik.php?tip=yazi&id=slug
+RewriteRule ^yazi/([A-Za-z0-9-]+)/?$ icerik.php?tip=yazi&id=$1 [L,QSA]
+RewriteRule ^etkinlik/([A-Za-z0-9-]+)/?$ icerik.php?tip=etkinlik&id=$1 [L,QSA]
