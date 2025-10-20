@@ -1,0 +1,36 @@
+[
+  {
+    "id": "duygu-termometresi",
+    "baslik": "Duygu Termometresi",
+    "yas": "5-6",
+    "amac": "Çocuğun duygularını beden sinyalleriyle ilişkilendirmesini sağlamak.",
+    "malzemeler": ["Termometre çizimli poster", "renkli kalemler", "yapışkanlı notlar"],
+    "adimlar": [
+      "Termometre posterini birlikte renklendirin.",
+      "Her duygu için renk seçin ve örnekler verin.",
+      "Gün içinden bir olayı seçip hangi seviyede hissettiğini işaretleyin.",
+      "Sakinleşmek için hangi stratejiyi kullanabileceğinizi konuşun."
+    ],
+    "kazanımlar": ["Duygu düzenleme", "öz farkındalık", "sözlü ifade"],
+    "uyarlama": "Daha küçük yaşlar için üç seviyeye indirip yüz ifadeleri kullanın.",
+    "uyari": "Poster duvara sağlamca asılmalı; küçük parçalar gözetimle kullanılmalı.",
+    "etiket": ["duygu", "ev", "pozitif-disiplin"]
+  },
+  {
+    "id": "nefes-oyunu-balon",
+    "baslik": "Balon Nefes Oyunu",
+    "yas": "3-4",
+    "amac": "Nefes kontrolüyle sakinleşme becerisi geliştirmek.",
+    "malzemeler": ["Renkli balonlar", "yumuşak müzik"],
+    "adimlar": [
+      "Balonları şişirirken büyük nefesler alıp vermeyi modelleyin.",
+      "Çocuğun kendi balonunu şişirmesine yardım edin.",
+      "Balonu bırakmadan önce 3'e kadar sayın.",
+      "Balonların süzülüşünü izlerken \"nefesimizi yavaşlatıyoruz\" deyin."
+    ],
+    "kazanımlar": ["Sakinleşme", "bekleme becerisi", "motor kontrol"],
+    "uyarlama": "Balon yerine kağıt yelpaze kullanılabilir.",
+    "uyari": "Balon parçaları yutma riskine karşı etkinliği yakın gözetimle yapın.",
+    "etiket": ["nefes", "duygu", "oyun"]
+  }
+]
