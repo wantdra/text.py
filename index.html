@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TELC B2 Mektup Çalışma Aracı</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="page-header">
+      <h1>TELC B2 Mektup Çalışma Aracı</h1>
+      <p class="tagline">
+        Almanca B2 TELC yazma sınavı için senaryo, mektup örneği ve boşluk
+        doldurma çalışması.
+      </p>
+    </header>
+
+    <main class="layout">
+      <section class="panel panel-select">
+        <h2>Şablon Seç</h2>
+        <label class="select-label" for="template-select"
+          >Konu başlığını seçin:</label
+        >
+        <select id="template-select" class="template-select"></select>
+        <p class="hint">
+          Her şablon TELC B2 mektup görevine benzer bir senaryo sunar. Türkçe
+          açıklamalar ve Almanca örnek mektup ile çalışabilirsiniz.
+        </p>
+        <div class="actions">
+          <button id="show-example" class="action-button">
+            Örnek Mektubu Göster
+          </button>
+          <button id="show-cloze" class="action-button">
+            Boşluk Doldurma Çalışması
+          </button>
+        </div>
+      </section>
+
+      <section class="panel" aria-live="polite">
+        <h2>Senaryo</h2>
+        <div class="split">
+          <article class="card">
+            <h3>Türkçe Açıklama</h3>
+            <div id="scenario-tr" class="content"></div>
+          </article>
+          <article class="card">
+            <h3>Deutsch</h3>
+            <div id="scenario-de" class="content"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel" id="example-panel" hidden>
+        <h2>Örnek Mektup</h2>
+        <div class="split">
+          <article class="card">
+            <h3>Deutsch</h3>
+            <div id="letter-de" class="content content-mono"></div>
+          </article>
+          <article class="card">
+            <h3>Türkçe Açıklama</h3>
+            <div id="letter-tr" class="content"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel" id="cloze-panel" hidden>
+        <h2>Boşluk Doldurma</h2>
+        <article class="card">
+          <h3>Metin</h3>
+          <div id="cloze-text" class="content content-mono"></div>
+        </article>
+        <article class="card">
+          <h3>Yanıt Anahtarı</h3>
+          <ol id="cloze-answers" class="answer-list"></ol>
+        </article>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      <p>
+        İpucu: Önce senaryoyu okuyun, ardından örnek mektubu inceleyin. Sonra
+        boşluk doldurma metnindeki kelimeleri hatırlamaya çalışın.
+      </p>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
