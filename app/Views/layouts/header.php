@@ -8,11 +8,15 @@
     <title><?php echo e(config('app_name')); ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #0f172a; color: #e2e8f0; }
-        .navbar { background-color: #111827; }
-        .card { background-color: #1f2937; color: #e2e8f0; }
-        .btn-primary { background-color: #2563eb; border-color: #2563eb; }
-        a { color: #93c5fd; }
+        /* Daha yumuşak ve ferah bir görünüm için pastel renk paleti */
+        body { background-color: #f6f8fb; color: #0f172a; }
+        .navbar { background-color: #0ea5e9; box-shadow: 0 2px 12px rgba(14,165,233,0.25); }
+        .navbar a.nav-link, .navbar .navbar-brand { color: #0b1221 !important; font-weight: 600; }
+        .card { background-color: #ffffff; color: #0b1221; border: 1px solid #e2e8f0; box-shadow: 0 6px 18px rgba(15,23,42,0.08); }
+        .btn-primary { background-color: #10b981; border-color: #10b981; box-shadow: 0 4px 12px rgba(16,185,129,0.25); }
+        .btn-primary:hover { background-color: #0ea375; border-color: #0ea375; }
+        a { color: #0ea5e9; }
+        .badge.bg-secondary { background-color: #e0f2fe !important; color: #0b1221; }
     </style>
 </head>
 <body>
