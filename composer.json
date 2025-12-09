@@ -1,0 +1,11 @@
+{
+  "name": "pflegefachkraft/app",
+  "description": "Pflegefachkraft Ausbildung icin PHP tabanli quiz ve ilerleme takip uygulamasi",
+  "type": "project",
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "App\\": "app/"
+    }
+  }
+}
