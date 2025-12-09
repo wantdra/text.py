@@ -1,26 +1,8 @@
 <?php
 session_start();
+require_once __DIR__ . '/db.php';
 
 const ADMIN_PASSWORD = 'admin123';
-
-function loadJson(string $path, $default)
-{
-    if (!file_exists($path)) {
-        return $default;
-    }
-
-    $data = json_decode(file_get_contents($path), true);
-    return is_array($data) ? $data : $default;
-}
-
-function saveJson(string $path, $data): void
-{
-    $dir = dirname($path);
-    if (!is_dir($dir)) {
-        mkdir($dir, 0755, true);
-    }
-    file_put_contents($path, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE), LOCK_EX);
-}
 
 function sanitize(string $value): string
 {
@@ -41,11 +23,12 @@ function validateCsrf(string $token): bool
     return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
 }
 
-$wordsFile = __DIR__ . '/data/words.json';
-$messagesFile = __DIR__ . '/data/messages.json';
+function escapeOutput(string $text): string
+{
+    return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+}
 
-$words = loadJson($wordsFile, []);
-$messages = loadJson($messagesFile, []);
+$pdo = db();
 $errors = [];
 $success = '';
 
@@ -68,14 +51,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $sentence = sanitize($_POST['sentence'] ?? '');
 
         if ($german && $turkish) {
-            $id = 'w' . (count($words) + 1);
-            $words[] = [
-                'id' => $id,
+            $stmt = $pdo->prepare('INSERT INTO words (german, turkish, sentence) VALUES (:german, :turkish, :sentence)');
+            $stmt->execute([
                 'german' => $german,
                 'turkish' => $turkish,
-                'sentence' => $sentence ?: '—'
-            ];
-            saveJson($wordsFile, $words);
+                'sentence' => $sentence ?: '—',
+            ]);
             $success = 'Kelime eklendi ve herkes için görünür.';
         } else {
             $errors[] = 'Almanca ve Türkçe alanları zorunlu.';
@@ -83,8 +64,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($_POST['action'] === 'add_message') {
         $message = sanitize($_POST['message'] ?? '');
         if ($message) {
-            $messages[] = $message;
-            saveJson($messagesFile, $messages);
+            $stmt = $pdo->prepare('INSERT INTO messages (body) VALUES (:body)');
+            $stmt->execute(['body' => $message]);
             $success = 'Motivasyon mesajı eklendi.';
         } else {
             $errors[] = 'Mesaj alanı boş olamaz.';
@@ -92,12 +73,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$isLogged = isset($_SESSION['admin']);
+$messagesStmt = $pdo->query('SELECT id, body FROM messages ORDER BY id DESC');
+$messages = $messagesStmt->fetchAll();
 
-function escapeOutput(string $text): string
-{
-    return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
-}
+$isLogged = isset($_SESSION['admin']);
 ?>
 <!DOCTYPE html>
 <html lang="tr">
@@ -171,10 +150,10 @@ function escapeOutput(string $text): string
                 </form>
 
                 <div class="list">
-                    <?php foreach ($messages as $index => $message): ?>
+                    <?php foreach ($messages as $message): ?>
                         <div class="list-item">
-                            <span>#<?php echo $index + 1; ?></span>
-                            <p><?php echo escapeOutput($message); ?></p>
+                            <span>#<?php echo (int)$message['id']; ?></span>
+                            <p><?php echo escapeOutput($message['body']); ?></p>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -184,7 +163,7 @@ function escapeOutput(string $text): string
                 <h2>Güvenlik İpuçları</h2>
                 <ul class="tips">
                     <li>Paneli XAMPP üzerinde denedikten sonra parolayı değiştirin.</li>
-                    <li>Veri dosyalarını (data/*.json) sunucuda yazılabilir tutun.</li>
+                    <li>database.sql dosyasını içeri aktararak tam tablo adlarıyla MySQL kurulumunu tamamlayın.</li>
                     <li>CSRF koruması ve giriş olmadan işlem yapılmaz.</li>
                 </ul>
             </section>

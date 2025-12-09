@@ -1,27 +1,6 @@
 <?php
 session_start();
-
-function loadJson(string $path, $default)
-{
-    if (!file_exists($path)) {
-        return $default;
-    }
-
-    $contents = file_get_contents($path);
-    $data = json_decode($contents, true);
-
-    return is_array($data) ? $data : $default;
-}
-
-function saveJson(string $path, $data): void
-{
-    $dir = dirname($path);
-    if (!is_dir($dir)) {
-        mkdir($dir, 0755, true);
-    }
-
-    file_put_contents($path, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE), LOCK_EX);
-}
+require_once __DIR__ . '/db.php';
 
 function sanitize(string $value): string
 {
@@ -42,16 +21,35 @@ function validateCsrf(string $token): bool
     return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
 }
 
-$wordsFile = __DIR__ . '/data/words.json';
-$messagesFile = __DIR__ . '/data/messages.json';
-$usersFile = __DIR__ . '/data/users.json';
+function escapeOutput(string $text): string
+{
+    return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+}
 
-$words = loadJson($wordsFile, []);
-$messages = loadJson($messagesFile, []);
-$users = loadJson($usersFile, []);
+function slugifyUser(string $username): string
+{
+    $slug = preg_replace('/[^a-zA-Z0-9]+/', '-', strtolower($username));
+    return trim($slug, '-') ?: bin2hex(random_bytes(4));
+}
 
+$pdo = db();
 $errors = [];
 $flash = '';
+
+function findUserByKey(PDO $pdo, string $userKey): ?array
+{
+    $stmt = $pdo->prepare('SELECT * FROM users WHERE user_key = :user_key LIMIT 1');
+    $stmt->execute(['user_key' => $userKey]);
+    $user = $stmt->fetch();
+    return $user ?: null;
+}
+
+function getKnownWordIds(PDO $pdo, int $userId): array
+{
+    $stmt = $pdo->prepare('SELECT word_id FROM known_words WHERE user_id = :user_id');
+    $stmt->execute(['user_id' => $userId]);
+    return array_map(fn($row) => (int)$row['word_id'], $stmt->fetchAll());
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_type'])) {
     if (!validateCsrf($_POST['csrf'] ?? '')) {
@@ -62,48 +60,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_type'])) {
         if (strlen($username) < 2) {
             $errors[] = 'Lütfen en az 2 karakterlik bir isim girin.';
         } else {
-            $userKey = strtolower(preg_replace('/[^a-zA-Z0-9]+/', '-', $username));
-            if (!isset($users[$userKey])) {
-                $users[$userKey] = [
+            $userKey = slugifyUser($username);
+            $user = findUserByKey($pdo, $userKey);
+            $today = date('Y-m-d');
+            $yesterday = date('Y-m-d', strtotime('-1 day'));
+
+            if (!$user) {
+                $insert = $pdo->prepare('INSERT INTO users (user_key, name, streak, last_seen, created_at, reviewed_today) VALUES (:user_key, :name, 1, :last_seen, NOW(), 0)');
+                $insert->execute([
+                    'user_key' => $userKey,
                     'name' => $username,
-                    'known_words' => [],
-                    'streak' => 1,
-                    'last_seen' => date('Y-m-d'),
-                    'created_at' => date('c'),
-                    'reviewed_today' => 0
-                ];
+                    'last_seen' => $today,
+                ]);
             } else {
-                $today = date('Y-m-d');
-                $yesterday = date('Y-m-d', strtotime('-1 day'));
-                $lastSeen = $users[$userKey]['last_seen'] ?? null;
+                $streak = (int)($user['streak'] ?? 1);
+                $lastSeen = $user['last_seen'];
 
                 if ($lastSeen === $yesterday) {
-                    $users[$userKey]['streak'] = ($users[$userKey]['streak'] ?? 1) + 1;
+                    $streak += 1;
                 } elseif ($lastSeen !== $today) {
-                    $users[$userKey]['streak'] = 1;
-                    $users[$userKey]['reviewed_today'] = 0;
+                    $streak = 1;
                 }
-                $users[$userKey]['last_seen'] = $today;
+
+                $update = $pdo->prepare('UPDATE users SET streak = :streak, last_seen = :today, reviewed_today = CASE WHEN last_seen = :today THEN reviewed_today ELSE 0 END WHERE id = :id');
+                $update->execute([
+                    'streak' => $streak,
+                    'today' => $today,
+                    'id' => $user['id'],
+                ]);
             }
 
             $_SESSION['user_key'] = $userKey;
-            saveJson($usersFile, $users);
             $flash = 'Hoş geldin ' . $username . '!';
         }
     } elseif ($_POST['form_type'] === 'known' && isset($_SESSION['user_key'])) {
-        $wordId = sanitize($_POST['word_id'] ?? '');
+        $wordId = (int)($_POST['word_id'] ?? 0);
         $userKey = $_SESSION['user_key'];
+        $user = findUserByKey($pdo, $userKey);
 
-        if ($wordId && array_filter($words, fn($w) => $w['id'] === $wordId)) {
-            $user = $users[$userKey] ?? null;
-            if ($user) {
-                if (!in_array($wordId, $user['known_words'], true)) {
-                    $user['known_words'][] = $wordId;
-                    $user['reviewed_today'] = ($user['reviewed_today'] ?? 0) + 1;
-                }
-                $user['last_seen'] = date('Y-m-d');
-                $users[$userKey] = $user;
-                saveJson($usersFile, $users);
+        if ($wordId > 0 && $user) {
+            $wordExists = $pdo->prepare('SELECT id FROM words WHERE id = :id');
+            $wordExists->execute(['id' => $wordId]);
+            if ($wordExists->fetch()) {
+                $knownInsert = $pdo->prepare('INSERT IGNORE INTO known_words (user_id, word_id) VALUES (:user_id, :word_id)');
+                $knownInsert->execute([
+                    'user_id' => $user['id'],
+                    'word_id' => $wordId,
+                ]);
+
+                $increment = $pdo->prepare('UPDATE users SET reviewed_today = reviewed_today + 1, last_seen = :today WHERE id = :id');
+                $increment->execute([
+                    'today' => date('Y-m-d'),
+                    'id' => $user['id'],
+                ]);
+
                 $flash = 'Kelime listene eklendi.';
             }
         }
@@ -111,30 +121,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_type'])) {
 }
 
 $currentUser = null;
-if (isset($_SESSION['user_key']) && isset($users[$_SESSION['user_key']])) {
-    $currentUser = $users[$_SESSION['user_key']];
+if (isset($_SESSION['user_key'])) {
+    $currentUser = findUserByKey($pdo, $_SESSION['user_key']);
 }
 
-$knownCount = $currentUser['known_words'] ?? [];
-$knownCount = is_array($knownCount) ? count($knownCount) : 0;
+$wordsStmt = $pdo->query('SELECT id, german, turkish, sentence FROM words ORDER BY id ASC');
+$words = $wordsStmt->fetchAll();
+
+$messagesStmt = $pdo->query('SELECT body FROM messages ORDER BY id ASC');
+$messages = array_column($messagesStmt->fetchAll(), 'body');
+
+$knownIds = [];
+if ($currentUser) {
+    $knownIds = getKnownWordIds($pdo, (int)$currentUser['id']);
+}
+
+$knownCount = count($knownIds);
 $totalCount = count($words);
 $remaining = max($totalCount - $knownCount, 0);
 $progressPercent = $totalCount > 0 ? round(($knownCount / $totalCount) * 100) : 0;
 
 $recommendation = 'Her gün 15 kelimeyle devam et, 1 ayda büyük yol kat edersin.';
-if ($knownCount > 0) {
+if ($knownCount > 0 && $totalCount > 0) {
     $dailyTarget = max(5, min(25, intval(($remaining / 30) + 1)));
-    $daysLeft = $dailyTarget > 0 ? ceil($remaining / $dailyTarget) : 0;
+    $daysLeft = $dailyTarget > 0 ? (int)ceil($remaining / $dailyTarget) : 0;
     $targetDate = $daysLeft > 0 ? date('d M Y', strtotime("+{$daysLeft} days")) : 'bugün';
     $recommendation = "Günde {$dailyTarget} kelime ile ilerlersen yaklaşık {$daysLeft} günde bitirirsin. Tahmini bitiş: {$targetDate}";
 }
 
-$randomMessage = $messages[array_rand($messages)] ?? 'Motivasyon için yeni mesaj ekleyin.';
-
-function escapeOutput(string $text): string
-{
-    return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
-}
+$randomMessage = $messages ? $messages[array_rand($messages)] : 'Motivasyon için yeni mesaj ekleyin.';
 ?>
 <!DOCTYPE html>
 <html lang="tr">
@@ -199,31 +214,45 @@ function escapeOutput(string $text): string
                     <div class="streak-card">
                         <div class="streak-header">
                             <span class="streak-icon">🔥</span>
-                            <div>
-                                <div class="streak-label">Günlük Seri</div>
-                                <div class="streak-number" id="streakNumber"><?php echo intval($currentUser['streak'] ?? 1); ?></div>
-                            </div>
                         </div>
-                        <div class="streak-label"><?php echo escapeOutput('Bugün ' . ($currentUser['reviewed_today'] ?? 0) . ' kelime çalıştın.'); ?></div>
+                        <div class="streak-number" id="streakNumber"><?php echo (int)$currentUser['streak']; ?></div>
+                        <div class="streak-label">gün üst üste çalıştın! Harikasın!</div>
                     </div>
+
                     <div class="badges-card">
-                        <h3>Başarıların</h3>
-                        <div class="badges-grid" id="badgeGrid">
-                            <div class="badge <?php echo $knownCount >= 10 ? '' : 'locked'; ?>">
-                                <div class="badge-icon">🏅</div>
-                                <div class="badge-name">İlk 10</div>
+                        <h3>Başarılarım</h3>
+                        <div class="badges-grid">
+                            <div class="badge">
+                                <div class="badge-icon">🏆</div>
+                                <div class="badge-name">İlk 50</div>
                             </div>
-                            <div class="badge <?php echo $knownCount >= 25 ? '' : 'locked'; ?>">
+                            <div class="badge">
                                 <div class="badge-icon">⚡</div>
-                                <div class="badge-name">25 Kelime</div>
+                                <div class="badge-name">7 Gün Seri</div>
                             </div>
-                            <div class="badge <?php echo $knownCount >= 50 ? '' : 'locked'; ?>">
+                            <div class="badge">
                                 <div class="badge-icon">🎯</div>
-                                <div class="badge-name">50 Kelime</div>
+                                <div class="badge-name">100 Kelime</div>
                             </div>
                             <div class="badge locked">
-                                <div class="badge-icon">🔒</div>
-                                <div class="badge-name">Rozetler yakında</div>
+                                <div class="badge-icon">💎</div>
+                                <div class="badge-name">Usta</div>
+                            </div>
+                            <div class="badge locked">
+                                <div class="badge-icon">🌟</div>
+                                <div class="badge-name">30 Gün</div>
+                            </div>
+                            <div class="badge locked">
+                                <div class="badge-icon">📖</div>
+                                <div class="badge-name">500 Kelime</div>
+                            </div>
+                            <div class="badge locked">
+                                <div class="badge-icon">🚀</div>
+                                <div class="badge-name">Rocket</div>
+                            </div>
+                            <div class="badge locked">
+                                <div class="badge-icon">🏅</div>
+                                <div class="badge-name">Champion</div>
                             </div>
                         </div>
                     </div>
@@ -231,35 +260,56 @@ function escapeOutput(string $text): string
 
                 <div class="today-review" id="review">
                     <h3>Bugün Tekrar Edilecek</h3>
-                    <div class="today-count"><?php echo max(3, $remaining); ?></div>
+                    <div class="today-count"><?php echo max(1, $remaining); ?></div>
                     <p class="today-subtitle">cümle ve kelime seni bekliyor</p>
-                    <button class="btn btn-primary" id="startReview">Tekrara Başla →</button>
+                    <button class="btn btn-primary">Tekrara Başla →</button>
                 </div>
 
                 <div class="recommendation-box">
                     <h4>💡 Sana Özel Öneri</h4>
-                    <p class="recommendation-text" id="recommendationText"><?php echo escapeOutput($recommendation); ?></p>
+                    <p class="recommendation-text" id="recommendationText">
+                        <?php echo escapeOutput($recommendation); ?>
+                    </p>
                 </div>
 
-                <div class="activity-section" id="words">
-                    <h3>Kelime Listesi</h3>
-                    <p class="muted">Yeni eklenen tüm kelimeler burada. Bildiklerine tıkla, ilerlemen artsın.</p>
-                    <div class="word-grid">
-                        <?php foreach ($words as $word): ?>
-                            <div class="word-card <?php echo in_array($word['id'], $currentUser['known_words'] ?? [], true) ? 'known' : ''; ?>">
-                                <div>
-                                    <div class="word-title"><?php echo escapeOutput($word['german']); ?></div>
-                                    <div class="word-subtitle"><?php echo escapeOutput($word['turkish']); ?></div>
-                                    <div class="word-sentence"><?php echo escapeOutput($word['sentence']); ?></div>
-                                </div>
-                                <form method="POST">
-                                    <input type="hidden" name="form_type" value="known" />
-                                    <input type="hidden" name="csrf" value="<?php echo getCsrfToken(); ?>" />
-                                    <input type="hidden" name="word_id" value="<?php echo escapeOutput($word['id']); ?>" />
-                                    <button class="btn btn-secondary" type="submit" <?php echo in_array($word['id'], $currentUser['known_words'] ?? [], true) ? 'disabled' : ''; ?>>Biliyorum</button>
-                                </form>
-                            </div>
-                        <?php endforeach; ?>
+                <div class="activity-section">
+                    <h3>Son 7 Günlük Aktiviten</h3>
+                    <div class="activity-chart">
+                        <div class="activity-bar-wrapper">
+                            <div class="activity-count">8</div>
+                            <div class="activity-bar" style="height: 55%;"></div>
+                            <div class="activity-day">Pzt</div>
+                        </div>
+                        <div class="activity-bar-wrapper">
+                            <div class="activity-count">12</div>
+                            <div class="activity-bar" style="height: 80%;"></div>
+                            <div class="activity-day">Sal</div>
+                        </div>
+                        <div class="activity-bar-wrapper">
+                            <div class="activity-count">15</div>
+                            <div class="activity-bar" style="height: 100%;"></div>
+                            <div class="activity-day">Çar</div>
+                        </div>
+                        <div class="activity-bar-wrapper">
+                            <div class="activity-count">10</div>
+                            <div class="activity-bar" style="height: 67%;"></div>
+                            <div class="activity-day">Per</div>
+                        </div>
+                        <div class="activity-bar-wrapper">
+                            <div class="activity-count">14</div>
+                            <div class="activity-bar" style="height: 93%;"></div>
+                            <div class="activity-day">Cum</div>
+                        </div>
+                        <div class="activity-bar-wrapper">
+                            <div class="activity-count">9</div>
+                            <div class="activity-bar" style="height: 60%;"></div>
+                            <div class="activity-day">Cmt</div>
+                        </div>
+                        <div class="activity-bar-wrapper">
+                            <div class="activity-count">11</div>
+                            <div class="activity-bar" style="height: 73%;"></div>
+                            <div class="activity-day">Paz</div>
+                        </div>
                     </div>
                 </div>
 
@@ -268,7 +318,7 @@ function escapeOutput(string $text): string
                         <h3>İlerleme Durumun</h3>
                         <p class="progress-subtitle">Toplam içerikte ne kadar yol kat ettin</p>
                     </div>
-
+                    
                     <div class="progress-bar-container">
                         <div class="progress-bar" style="width: <?php echo $progressPercent; ?>%;">
                             <span class="progress-label"><?php echo $progressPercent; ?>%</span>
@@ -278,7 +328,7 @@ function escapeOutput(string $text): string
                     <div class="progress-stats">
                         <div class="stat-item">
                             <div class="stat-number"><?php echo $knownCount; ?></div>
-                            <div class="stat-label">Bildiklerin</div>
+                            <div class="stat-label">Bildiğin</div>
                         </div>
                         <div class="stat-item">
                             <div class="stat-number"><?php echo $totalCount; ?></div>
@@ -287,6 +337,39 @@ function escapeOutput(string $text): string
                         <div class="stat-item">
                             <div class="stat-number"><?php echo $remaining; ?></div>
                             <div class="stat-label">Kalan</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="calculator-section">
+                    <div class="calc-header">
+                        <h3>Hesap Makinesi</h3>
+                        <p class="calc-subtitle">Ne kadar sürede tamamlarsın? Hemen hesapla!</p>
+                    </div>
+
+                    <div class="calc-type-toggle">
+                        <button class="calc-type-btn active" data-type="words">Kelime</button>
+                        <button class="calc-type-btn" data-type="sentences">Cümle</button>
+                        <button class="calc-type-btn" data-type="both">İkisi Birden</button>
+                    </div>
+
+                    <div class="calc-inputs">
+                        <div class="input-group">
+                            <label class="input-label">Günde kaç tane öğrenmek istiyorsun?</label>
+                            <input type="number" class="input-field" id="perDay" value="10" min="1" max="100">
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">Toplam öğrenilecek sayı</label>
+                            <input type="number" class="input-field" id="total" value="<?php echo $remaining; ?>" min="1">
+                        </div>
+                    </div>
+
+                    <div class="calc-result">
+                        <div class="result-main" id="resultDays">42</div>
+                        <div class="result-label">gün sonra tamamlarsın!</div>
+                        <div class="result-detail" id="resultDetail">
+                            Her gün 10 kelime öğrenirsen, <strong>6 hafta</strong> içinde tüm kelimeleri bitirebilirsin. 
+                            <br>Bitiş tarihi: <strong id="endDate">20 Ocak 2026</strong>
                         </div>
                     </div>
                 </div>
@@ -314,25 +397,33 @@ function escapeOutput(string $text): string
                     </div>
                 </div>
 
-                <div class="motivation-section">
-                    <div class="motivation-card">
-                        <h3>Motivasyon Köşesi</h3>
-                        <p id="motivationText"><?php echo escapeOutput($randomMessage); ?></p>
+                <section id="words" class="words-list">
+                    <h3>Kelime Listesi</h3>
+                    <div class="word-cards">
+                        <?php foreach ($words as $word): ?>
+                            <article class="word-card">
+                                <div>
+                                    <p class="word"><?php echo escapeOutput($word['german']); ?></p>
+                                    <p class="meaning"><?php echo escapeOutput($word['turkish']); ?></p>
+                                    <p class="sentence"><?php echo escapeOutput($word['sentence']); ?></p>
+                                </div>
+                                <form method="POST">
+                                    <input type="hidden" name="form_type" value="known">
+                                    <input type="hidden" name="csrf" value="<?php echo getCsrfToken(); ?>">
+                                    <input type="hidden" name="word_id" value="<?php echo (int)$word['id']; ?>">
+                                    <?php $isKnown = in_array((int)$word['id'], $knownIds, true); ?>
+                                    <button class="btn <?php echo $isKnown ? 'btn-secondary' : 'btn-primary'; ?>" type="submit" <?php echo $isKnown ? 'disabled' : ''; ?>>
+                                        <?php echo $isKnown ? 'Biliyorsun' : 'Biliyorum'; ?>
+                                    </button>
+                                </form>
+                            </article>
+                        <?php endforeach; ?>
                     </div>
-                    <div class="sentence-rotation">
-                        <div class="rotator-title">Örnek Cümleler</div>
-                        <ul id="sentenceList">
-                            <?php foreach ($words as $word): ?>
-                                <li><?php echo escapeOutput($word['sentence']); ?></li>
-                            <?php endforeach; ?>
-                        </ul>
-                    </div>
-                </div>
+                </section>
             </section>
         <?php endif; ?>
     </main>
 </div>
-<script>window.appWords = <?php echo json_encode($words, JSON_UNESCAPED_UNICODE); ?>;</script>
 <script src="assets/js/app.js"></script>
 </body>
 </html>
