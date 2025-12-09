@@ -1,0 +1,20 @@
+[
+  {
+    "id": "w1",
+    "german": "Guten Morgen",
+    "turkish": "Günaydın",
+    "sentence": "Guten Morgen, wie geht es dir?"
+  },
+  {
+    "id": "w2",
+    "german": "Danke",
+    "turkish": "Teşekkürler",
+    "sentence": "Danke für deine Hilfe." 
+  },
+  {
+    "id": "w3",
+    "german": "Entschuldigung",
+    "turkish": "Afedersiniz",
+    "sentence": "Entschuldigung, können Sie das wiederholen?"
+  }
+]
